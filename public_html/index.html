@@ -1,0 +1,185 @@
+<html ng-app="app">
+<head>
+	<meta charset="UTF-8">
+	<title>Agenda Web Angular</title>
+	<link rel="stylesheet" href="static/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="static/bootstrap/css/bootstrap-theme.css">
+	<link rel="stylesheet" href="static/bootstrap/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="css/style.css">
+    <script src="static/jquery/dist/jquery.min.js"></script>
+    <script src="static/jquery/dist/jquery.js"></script>
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="static/jquery-ui/js/jquery-1.8.3.min.js"></script>
+    <script src="static/jquery-ui/js/jquery-ui-1.9.2.custom.min.js"></script>
+   
+ 	
+	
+</head>
+<body  data-ng-controller="Contacto_Controller" ng-init="cargar()">
+	<div class="container">
+		<div class="panel panel-default">
+			<div class="panel-heading"><h4>Tus Contactos</h4></div>
+    			<div class="panel-body">
+    				<div class="wrapper">
+						<label>BUSCAR: <input ng-model="filtro"></label><input type="button" value="Buscar" ng-click="cargar()">
+						<table align="center">
+							<tbody>
+	    						<tr>
+	        						<th>Nombre</th>
+	        						<th>Apellido</th>
+	        						<th>Telefono</th>
+									<th colspan="2">Acciones</th>
+	    						</tr>
+	    						<tr ng-repeat="person in contactos |orderBy: id">
+	        						<td>{{person.nombre}}</td>
+	        						<td>{{person.apellido}}</td>
+	        						<td>{{person.telefono}}</td>
+	        						<td>
+										<button class="btn btn-primary" ng-click="borrar(person.id)" ng-confirm-click="Esta seguro que desea eliminar este elemento?">Eliminar</button>
+										<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editForm" ng-click="editar(person.id)"  >Editar</button>
+									</td>
+									
+		    					</tr>
+
+							</tbody>
+		    					<button type="button" ng-click="antPag()"  style="float: center;">Anterior<span class="glyphicon glyphicon-menu-left"></span></button>
+								<button type="button" ng-click="sigPag()" style="float: center;">Siguiente<span class="glyphicon glyphicon-menu-right"></span></button>
+                                                                    <center><button class="btn btn-primary" data-toggle="modal" data-target="#contacto_form">Agregar Contacto</button></center></br>
+								
+								
+						</table>
+					</div>
+					
+					
+					<div class="modal" id="contacto_form" role="dialog">
+						<div class="modal-dialog">
+							<div class="modal-content">
+			 					<div class="modal-header">
+				 					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				 					<h2>Nuevo Contacto</h2>
+								</div>
+
+								<form name="contacto_Form" novalidate>
+									<div class="modal-body">
+
+										Nombre
+										<input class="form-control" type="text" name="nombre" ng-model="nuevoContacto.nombre"></input>
+										<span style="color:red" ng-show="contacto_Form.nombre.$invalid">
+			 								<span ng-show="contacto_Form.nombre.$error.required">El nombre es requerido.</span>
+										</span>
+										</br>
+										Apellido <input class="form-control" type="text" name="apellido" ng-model="nuevoContacto.apellido"></input>
+										<span style="color:red" ng-show="contacto_Form.apellido.$invalid">
+											<span ng-show="contacto_Form.apellido.$error.required">El apellido es requerido.</span>
+										</span>
+		 								</br>
+		 								Alias  <input class="form-control"  type="text" name="alias" ng-model="nuevoContacto.alias" ></input>
+		 								</br>
+		 								Telefono<input class="form-control"  type="number" name="telefono" ng-model="nuevoContacto.telefono"></input>
+		 								<span style="color:red" ng-show="contactForm.telefono.$invalid">
+											<span ng-show="contacto_Form.telefono.$error.required">El telefono es requerido.</span>
+										</span>
+										</br>
+										Correo Electrónico <input class="form-control"  type="email" name="email" ng-model="nuevoContacto.email"></input>
+										<span style="color:red" ng-show="contacto_Form.email.$invalid">
+											<span ng-show="contact_Form.email.$error.required">
+			 								El email es requerido</span>
+			 								<span ng-show="contacto_Form.email.$error.email">
+										Ingrese un formato de email válido</span>
+		 								</span>
+										</br>
+
+										Direccion<input class="form-control"  type="text" name="direccion" ng-model="nuevoContacto.direccion"></input>
+		 							
+
+										<div class="modal-footer">
+											<button class="btn btn-primary" type="submit"   id="guardar" ng-click="Guardar()" ng-disabled="contactForm.$invalid"  data-toggle="modal" data-dismiss="modal" >Guardar</button>
+											<button class="btn btn-primary" type="button"   data-dismiss="modal">Cancelar</button>
+										</div>
+									</div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="modal fade" id="editForm" role="dialog">
+							<div class="modal-dialog">
+								<div class="modal-content">
+								 	<div class="modal-header">
+									 	<button type="button" class="close" data-dismiss="modal">&times;</button>
+											<h2>Editar</h2>
+									</div>
+									<form name="personForm" novalidate>
+										<div class="modal-body">
+												<label>Id</label>
+												<input class="form-control" type="text"  ng-model="model.id" disabled></input>
+						
+												</br>
+												<label>Nombre</label>
+												<input class="form-control" type="text" name="nombre" ng-model="model.nombre" required></input>
+												<span style="color:red" ng-show="personForm.nombre.$invalid">
+													<span ng-show="personForm.nombre.$error.required">El nombre es requerido.</span>
+												</span>
+												</br>
+												<label>Apellido</label>
+												<input class="form-control" type="text" name="apellido" ng-model="model.apellido" required></input>
+												<span style="color:red" ng-show="personForm.apellido.$invalid">
+													<span ng-show="personForm.apellido.$error.required">El apellido es requerido.</span>
+												</span>
+												</br>
+												<label>Correo Electrónico</label>
+												<input class="form-control"  type="email" name="mail" ng-model="model.email" required></input>
+												<span style="color:red" ng-show="personForm.mail.$invalid">
+												<span ng-show="personForm.mail.$error.required">
+			 										El email es requerido</span>
+			 										<span ng-show="personForm.mail.$error.email">
+													Ingrese un formato de email válido</span>
+		 										</span>
+		 										</br>
+		 										<label>Alias</label>
+		 										<input class="form-control"  type="text" name="alias" ng-model="model.alias" ></input>
+		 										</br>
+		 										<label>Telefono</label>
+		 										<input class="form-control"  type="numeric" name="telefono" ng-model="model.telefono" required></input>
+		 										<span style="color:red" ng-show="personForm.telefono.$invalid">
+													<span ng-show="personForm.telefono.$error.required">El telefono es requerido.</span>
+												</span>
+												</br>
+												<label>Direccion</label>
+												<input class="form-control"  type="text" name="direccion" ng-model="model.direccion"></input>
+												<label>Fecha de Creacion</label>
+												<input class="form-control" type="text"  ng-model="model.fechacreacion" disabled></input>
+												
+											<div class="modal-footer">
+												<button class="btn btn-primary" type="submit" ng-click="Guardar_Edit(model.id,model)" ng-disabled="personForm.$invalid" ng-confirm-edit-click="Desea guardar los cambios?" data-dismiss="modal" >Guardar</button>
+												<button class="btn btn-primary" type="button"   data-dismiss="modal">Cancelar</button>
+											</div>
+
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					
+					
+
+					
+    		</div>
+    	
+  		</div>
+	</div>
+	<script src="js/angular.min.js"></script>
+ 	<script src="js/scripts.js"></script>
+        <script src="js/service.js" type="text/javascript"></script>
+ 	<script src="directives/ng-confirm-click.js"></script>
+ 	<script src="directives/ng-confirm-edit-click.js"></script>
+ 	<script type="text/javascript">
+    $('#guardar').click(function(){
+   setTimeout(function(){
+       $('#editForm').modal('show');
+   }, 2000);
+	});
+</script>
+</body>
+</html>
